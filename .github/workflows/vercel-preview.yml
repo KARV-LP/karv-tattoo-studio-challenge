@@ -107,8 +107,19 @@ jobs:
           share_secret="$(node -e '
             const fs = require("node:fs");
             const value = JSON.parse(fs.readFileSync("qa-share-response.json", "utf8"));
-            if (typeof value !== "string" || value.length < 1) process.exit(1);
-            process.stdout.write(value);
+            const candidates = [
+              value,
+              value?.value,
+              value?.secret,
+              value?.protectionBypass,
+              value?.protectionBypass?.secret
+            ];
+            const secret = candidates.find((candidate) => typeof candidate === "string" && candidate.length > 0);
+            if (!secret) {
+              console.error("Unexpected share-link response keys:", Object.keys(value ?? {}));
+              process.exit(1);
+            }
+            process.stdout.write(secret);
           ')"
           PREVIEW_URL="$PREVIEW_URL" SHARE_SECRET="$share_secret" node -e '
             const fs = require("node:fs");
