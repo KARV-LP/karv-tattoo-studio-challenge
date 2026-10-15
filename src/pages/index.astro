@@ -14,15 +14,15 @@ import {
 const formEndpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? "";
 ---
 <BaseLayout
-  title="KARV — Tattoo Studio Challenge"
-  description="Uma seleção artística para levar a linguagem da tatuagem ao revestimento da Poltrona KARV."
+  title="KARV Tattoo Studio Challenge — Sua Arte Pode Virar Uma KARV"
+  description="Seleção exclusiva para estúdios de tatuagem. Crie sua proposta, participe da votação e concorra a 2 Poltronas KARV personalizadas."
 >
   <header class="topbar">
-    <a class="wordmark" href="#inicio" aria-label="KARV — início">KARV</a>
+    <a class="wordmark" href="#inicio" aria-label="KARV — início">KARV <span>/ MARCA PENDENTE</span></a>
     <nav aria-label="Navegação principal">
       <a href="#como-funciona">Como funciona</a>
       <a href="#premio">Prêmio</a>
-      <a href="#faq">FAQ</a>
+      <a href="#faq">Dúvidas</a>
     </nav>
     <a class="button button--small" href="#inscricao">QUERO PARTICIPAR</a>
   </header>
@@ -30,17 +30,29 @@ const formEndpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? "";
   <main id="conteudo">
     <section class="hero ink-section" id="inicio">
       <div class="hero__copy">
-        <p class="eyebrow">KARV × TATTOO STUDIOS</p>
-        <h1>SUA ARTE.<br />OUTRA PELE.</h1>
-        <p class="hero__lead">
-          Uma seleção artística para transformar linguagem, traço e repertório em revestimento de design.
-        </p>
-        <a class="button" href="#inscricao">INSCREVA SEU ESTÚDIO <span aria-hidden="true">↘</span></a>
+        <p class="eyebrow">KARV TATTOO STUDIO CHALLENGE #01</p>
+        <h1 aria-label="Sua arte pode virar uma KARV.">
+          <span class="hero__title-desktop" aria-hidden="true">SUA ARTE<br />PODE VIRAR<br />UMA KARV.</span>
+          <span class="hero__title-mobile" aria-hidden="true">SUA ARTE PODE<br />VIRAR UMA KARV.</span>
+        </h1>
+        <p class="hero__lead">Uma seleção exclusiva para estúdios de tatuagem.</p>
+        <div class="hero__narrative">
+          <p>Você cria a arte.</p>
+          <p>A KARV transforma em design.</p>
+          <p>Sua comunidade decide qual será produzida.</p>
+        </div>
+        <p class="hero__prize">O vencedor recebe 2 Poltronas KARV personalizadas.</p>
+        <a class="button" href="#inscricao">QUERO PARTICIPAR <span aria-hidden="true">↘</span></a>
+        <p class="hero__note">Não precisa ter arte pronta nem saber 3D para se inscrever.</p>
       </div>
       <div class="hero__media">
-        <AssetPlaceholder label="HERO KARV — DESKTOP / MOBILE" ratio="hero" />
+        <div class="hero__media-desktop">
+          <AssetPlaceholder label="A01 — HERO KARV DESKTOP / 16:9" ratio="hero" />
+        </div>
+        <div class="hero__media-mobile">
+          <AssetPlaceholder label="A02 — HERO KARV MOBILE / 9:16" ratio="hero" />
+        </div>
       </div>
-      <p class="hero__aside">ARTE → REVESTIMENTO → KARV → ESTÚDIO</p>
     </section>
 
     <section class="manifesto paper-section">

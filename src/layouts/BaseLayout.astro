@@ -7,7 +7,20 @@ interface Props {
 }
 
 const { title, description } = Astro.props;
-const ogImage = import.meta.env.PUBLIC_OG_IMAGE_URL;
+const ogImage = (import.meta.env.PUBLIC_OG_IMAGE_URL ?? "").trim();
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL ?? "").trim();
+
+const isAbsoluteHttpUrl = (value: string) => {
+  try {
+    const url = new URL(value);
+    return url.protocol === "https:" || url.protocol === "http:";
+  } catch {
+    return false;
+  }
+};
+
+const hasValidOgImage = isAbsoluteHttpUrl(ogImage);
+const hasValidSiteUrl = isAbsoluteHttpUrl(siteUrl);
 ---
 <!doctype html>
 <html lang="pt-BR">
@@ -22,7 +35,12 @@ const ogImage = import.meta.env.PUBLIC_OG_IMAGE_URL;
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
-    {ogImage && <meta property="og:image" content={ogImage} />}
+    {hasValidSiteUrl && <meta property="og:url" content={siteUrl} />}
+    {hasValidOgImage ? (
+      <meta property="og:image" content={ogImage} />
+    ) : (
+      <meta name="karv:og-image-status" content="OG IMAGE FINAL — PENDENTE DE ASSET KARV" />
+    )}
     <title>{title}</title>
   </head>
   <body>

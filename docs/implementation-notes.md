@@ -28,6 +28,12 @@ Nenhuma imagem genérica substitui os assets oficiais. Todos os espaços visuais
 
 Defina `PUBLIC_FORM_ENDPOINT` no ambiente do Deploy Preview. Sem esse valor, o formulário valida os campos e informa claramente que o destino das inscrições está pendente, sem simular um envio.
 
+## Open Graph
+
+Defina `PUBLIC_OG_IMAGE_URL` com a URL absoluta e pública do asset oficial A12 e `PUBLIC_SITE_URL` com a URL canônica. Sem A12, a implementação mantém `og:title`, `og:description` e `og:type`, omite `og:image` inválido e registra no HTML: `OG IMAGE FINAL — PENDENTE DE ASSET KARV`.
+
+Não usar placeholder, imagem genérica ou outro asset como substituto de compartilhamento.
+
 ## Pendências KARV
 
 Datas, elegibilidade, território, frete, destino das peças, direitos, regulamento, privacidade, canal de contato, endpoint do formulário e plano de analytics.

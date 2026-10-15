@@ -10,7 +10,9 @@ npm run dev
 npm run build
 ```
 
-Copie `.env.example` para `.env` e configure `PUBLIC_FORM_ENDPOINT` quando o destino oficial das inscrições for definido.
+Copie `.env.example` para `.env`. Configure `PUBLIC_FORM_ENDPOINT` quando o destino oficial das inscrições for definido.
+
+O Open Graph espera `PUBLIC_OG_IMAGE_URL` com a URL absoluta e pública do asset oficial A12. Enquanto o arquivo aprovado não existir, a página não publica uma imagem substituta e marca `OG IMAGE FINAL — PENDENTE DE ASSET KARV` no HTML.
 
 ## Fonte visual
 
