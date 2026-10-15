@@ -98,6 +98,8 @@ p { max-width: 66ch; }
 .preserve-grid strong { color: var(--accent); font-family: var(--mono); font-size: .75rem; letter-spacing: .1em; }
 
 .style-grid { width: min(100%, var(--max)); margin: auto; display: grid; grid-template-columns: repeat(2, 1fr); gap: 42px 24px; }
+.style-card { min-width: 0; }
+.style-card .asset-placeholder { width: 100%; height: auto; }
 .style-card:last-child { grid-column: 1 / -1; }
 .style-card h3 { margin: 18px 0 4px; }
 .style-card p { color: var(--muted-dark); }
