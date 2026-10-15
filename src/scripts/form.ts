@@ -4,6 +4,9 @@ if (form) {
   const status = form.querySelector<HTMLElement>(".form-status");
   const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]');
   const languageInputs = [...form.querySelectorAll<HTMLInputElement>('input[name="linguagens"]')];
+  const track = (event: string) => window.dispatchEvent(
+    new CustomEvent("karv:analytics", { detail: { event, form: "studio_application" } })
+  );
 
   const setStatus = (message: string, state: "idle" | "error" | "success" | "pending") => {
     if (!status) return;
@@ -23,6 +26,7 @@ if (form) {
       form.reportValidity();
       languageInputs[0]?.setCustomValidity("");
       setStatus("Revise os campos obrigatórios antes de continuar.", "error");
+      track("form_validation_error");
       return;
     }
 
@@ -32,6 +36,7 @@ if (form) {
         "PENDENTE DE DEFINIÇÃO KARV — destino oficial das inscrições ainda não configurado.",
         "pending"
       );
+      track("form_blocked_configuration");
       return;
     }
 
@@ -53,8 +58,10 @@ if (form) {
 
       form.reset();
       setStatus("Inscrição recebida. Enviamos a confirmação para o e-mail informado.", "success");
+      track("form_submit_success");
     } catch {
       setStatus("Não foi possível enviar agora. Tente novamente em alguns instantes.", "error");
+      track("form_submit_error");
     } finally {
       submit?.removeAttribute("disabled");
     }
