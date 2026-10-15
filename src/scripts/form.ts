@@ -36,7 +36,7 @@ if (form) {
     }
 
     const data = new FormData(form);
-    const payload = Object.fromEntries(data.entries());
+    const payload: Record<string, FormDataEntryValue | string[]> = Object.fromEntries(data.entries());
     payload.linguagens = languageInputs.filter((input) => input.checked).map((input) => input.value);
 
     submit?.setAttribute("disabled", "true");
