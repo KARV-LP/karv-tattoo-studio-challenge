@@ -114,9 +114,13 @@ jobs:
               value?.protectionBypass,
               value?.protectionBypass?.secret
             ];
-            const secret = candidates.find((candidate) => typeof candidate === "string" && candidate.length > 0);
+            const directSecret = candidates.find((candidate) => typeof candidate === "string" && candidate.length > 0);
+            const bypassEntries = Object.entries(value?.protectionBypass ?? {})
+              .filter(([candidate, metadata]) => candidate.length > 0 && metadata && typeof metadata === "object")
+              .sort(([, left], [, right]) => Number(right.expiresAt ?? right.createdAt ?? 0) - Number(left.expiresAt ?? left.createdAt ?? 0));
+            const secret = directSecret ?? bypassEntries[0]?.[0];
             if (!secret) {
-              console.error("Unexpected share-link response keys:", Object.keys(value ?? {}));
+              console.error("Share-link response did not contain a usable bypass entry.");
               process.exit(1);
             }
             process.stdout.write(secret);
