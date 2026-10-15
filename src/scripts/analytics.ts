@@ -1,3 +1,5 @@
+export {};
+
 type AnalyticsValue = string | number | boolean;
 
 interface AnalyticsEvent {
