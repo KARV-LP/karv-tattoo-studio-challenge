@@ -1,0 +1,259 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import AssetPlaceholder from "../components/AssetPlaceholder.astro";
+import SectionHeader from "../components/SectionHeader.astro";
+import {
+  campaignSteps,
+  faqs,
+  karvDeliveries,
+  studioDuties,
+  styles,
+  timeline
+} from "../data/content";
+
+const formEndpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? "";
+---
+<BaseLayout
+  title="KARV — Tattoo Studio Challenge"
+  description="Uma seleção artística para levar a linguagem da tatuagem ao revestimento da Poltrona KARV."
+>
+  <header class="topbar">
+    <a class="wordmark" href="#inicio" aria-label="KARV — início">KARV</a>
+    <nav aria-label="Navegação principal">
+      <a href="#como-funciona">Como funciona</a>
+      <a href="#premio">Prêmio</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <a class="button button--small" href="#inscricao">QUERO PARTICIPAR</a>
+  </header>
+
+  <main id="conteudo">
+    <section class="hero ink-section" id="inicio">
+      <div class="hero__copy">
+        <p class="eyebrow">KARV × TATTOO STUDIOS</p>
+        <h1>SUA ARTE.<br />OUTRA PELE.</h1>
+        <p class="hero__lead">
+          Uma seleção artística para transformar linguagem, traço e repertório em revestimento de design.
+        </p>
+        <a class="button" href="#inscricao">INSCREVA SEU ESTÚDIO <span aria-hidden="true">↘</span></a>
+      </div>
+      <div class="hero__media">
+        <AssetPlaceholder label="HERO KARV — DESKTOP / MOBILE" ratio="hero" />
+      </div>
+      <p class="hero__aside">ARTE → REVESTIMENTO → KARV → ESTÚDIO</p>
+    </section>
+
+    <section class="manifesto paper-section">
+      <p class="eyebrow">TATUAGEM É LINGUAGEM</p>
+      <blockquote>
+        “A arte não termina na pele. Ela pode ocupar o espaço, vestir o produto e carregar a assinatura de quem cria.”
+      </blockquote>
+      <p>Esta é uma chamada para estúdios com repertório, técnica e uma visão que merece ganhar outra escala.</p>
+    </section>
+
+    <section class="process ink-section section-pad" id="como-funciona">
+      <SectionHeader
+        eyebrow="COMO FUNCIONA"
+        title="DA INSCRIÇÃO À PRODUÇÃO"
+        body="Uma jornada curada, com etapas claras e acompanhamento da KARV."
+        tone="light"
+      />
+      <ol class="steps">
+        {campaignSteps.map(([number, title, description]) => (
+          <li class="step-card">
+            <span>{number}</span>
+            <div>
+              <h3>{title}</h3>
+              <p>{description}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+      <p class="pending-note">DATAS E REGRAS OPERACIONAIS — PENDENTE DE DEFINIÇÃO KARV</p>
+    </section>
+
+    <section class="editorial-split paper-section section-pad">
+      <div class="editorial-split__media">
+        <AssetPlaceholder label="ARTE ALÉM DA PELE" ratio="portrait" />
+      </div>
+      <div class="editorial-split__copy">
+        <SectionHeader
+          eyebrow="ARTE ALÉM DA PELE"
+          title="UM NOVO SUPORTE PARA UMA LINGUAGEM AUTORAL"
+          body="A tatuagem nasce do encontro entre gesto, técnica e identidade. Aqui, essa linguagem atravessa a pele e passa a habitar um objeto de design."
+        />
+        <p>O estúdio selecionado cria a arte. A KARV cuida da adequação técnica ao molde oficial e da visualização no produto.</p>
+      </div>
+    </section>
+
+    <section class="transformation ink-section section-pad">
+      <SectionHeader
+        eyebrow="TRANSFORME SUA ARTE EM CONFORTO"
+        title="O REVESTIMENTO COMO TELA"
+        body="A intervenção acontece somente no revestimento. A Poltrona KARV oficial permanece integralmente preservada."
+        tone="light"
+      />
+      <AssetPlaceholder label="TRANSFORMAÇÃO — ARTE → REVESTIMENTO → POLTRONA" ratio="wide" />
+      <div class="preserve-grid">
+        <p><strong>PRESERVAR</strong> geometria, proporções, volumes, costuras, pés e silhueta.</p>
+        <p><strong>VARIAR</strong> somente a expressão gráfica aplicada ao revestimento.</p>
+      </div>
+    </section>
+
+    <section class="styles paper-section section-pad">
+      <SectionHeader
+        eyebrow="DIVERSIDADE ARTÍSTICA"
+        title="TODA LINGUAGEM TEM ESPAÇO"
+        body="A seleção procura consistência e autoria. O estilo é o ponto de partida, não um limite."
+      />
+      <div class="style-grid">
+        {styles.map(([name, description], index) => (
+          <article class="style-card">
+            <AssetPlaceholder label={name} ratio={index === 4 ? "wide" : "square"} />
+            <h3>{name}</h3>
+            <p>{description}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="prize ink-section section-pad" id="premio">
+      <div class="prize__copy">
+        <p class="eyebrow">PRÊMIO</p>
+        <h2>DUAS POLTRONAS.<br />UMA ASSINATURA.</h2>
+        <p>
+          A proposta vencedora ganha forma no revestimento da Poltrona KARV oficial.
+          Quantidades, destino das peças, frete e condições: <strong>PENDENTE DE DEFINIÇÃO KARV.</strong>
+        </p>
+        <a class="button" href="#inscricao">QUERO PARTICIPAR <span aria-hidden="true">↘</span></a>
+      </div>
+      <AssetPlaceholder label="2 POLTRONAS / PRÊMIO" ratio="portrait" />
+    </section>
+
+    <section class="roles paper-section section-pad">
+      <SectionHeader eyebrow="UMA CRIAÇÃO EM PARCERIA" title="QUEM ENTREGA O QUÊ" />
+      <div class="role-grid">
+        <article class="role-card">
+          <p class="eyebrow">ESTÚDIO</p>
+          <h3>AUTORIA E PARTICIPAÇÃO</h3>
+          <ul>{studioDuties.map((item) => <li>{item}</li>)}</ul>
+        </article>
+        <article class="role-card role-card--accent">
+          <p class="eyebrow">KARV</p>
+          <h3>CURADORIA E PRODUTO</h3>
+          <ul>{karvDeliveries.map((item) => <li>{item}</li>)}</ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="timeline ink-section section-pad">
+      <SectionHeader
+        eyebrow="CRONOGRAMA"
+        title="O CAMINHO ATÉ A PRODUÇÃO"
+        body="As datas oficiais serão inseridas após validação operacional."
+        tone="light"
+      />
+      <ol class="timeline-list">
+        {timeline.map(([label, date], index) => (
+          <li>
+            <span>{String(index + 1).padStart(2, "0")}</span>
+            <h3>{label}</h3>
+            <p>{date}</p>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <section class="application paper-section section-pad" id="inscricao">
+      <div class="application__intro">
+        <SectionHeader
+          eyebrow="INSCRIÇÃO"
+          title="MOSTRE O QUE O SEU ESTÚDIO TEM A DIZER"
+          body="Preencha os dados abaixo. O envio só será habilitado quando o destino oficial das inscrições e os termos forem definidos pela KARV."
+        />
+        <AssetPlaceholder label="DETALHE / TEXTURA OFICIAL KARV" ratio="wide" />
+      </div>
+
+      <form class="application-form" data-endpoint={formEndpoint} novalidate>
+        <div class="field-grid">
+          <label>Nome do responsável*
+            <input name="responsavel" autocomplete="name" required />
+          </label>
+          <label>Nome do estúdio*
+            <input name="estudio" autocomplete="organization" required />
+          </label>
+          <label>E-mail*
+            <input name="email" type="email" autocomplete="email" required />
+          </label>
+          <label>Telefone / WhatsApp*
+            <input name="telefone" type="tel" autocomplete="tel" required />
+          </label>
+          <label>Cidade*
+            <input name="cidade" autocomplete="address-level2" required />
+          </label>
+          <label>Estado / País*
+            <input name="territorio" autocomplete="address-level1" required />
+          </label>
+          <label>Instagram do estúdio*
+            <input name="instagram" placeholder="@seuestudio" required />
+          </label>
+          <label>Link do portfólio*
+            <input name="portfolio" type="url" placeholder="https://" required />
+          </label>
+        </div>
+
+        <fieldset>
+          <legend>Principais linguagens*</legend>
+          <div class="choice-grid">
+            {["Blackwork", "Neo traditional", "Fine line", "Realismo", "Autoral / outra"].map((item) => (
+              <label class="choice"><input type="checkbox" name="linguagens" value={item} /> <span>{item}</span></label>
+            ))}
+          </div>
+        </fieldset>
+
+        <label>Conte sobre o estúdio e sua linguagem*
+          <textarea name="apresentacao" rows="6" minlength="80" maxlength="1200" required></textarea>
+          <small>Entre 80 e 1.200 caracteres.</small>
+        </label>
+
+        <label class="choice choice--legal">
+          <input type="checkbox" name="termos" required />
+          <span>Li e aceito o regulamento e a política de privacidade — PENDENTE DE DEFINIÇÃO KARV.</span>
+        </label>
+        <label class="choice choice--legal">
+          <input type="checkbox" name="direitos" required />
+          <span>Autorizo o tratamento dos dados e o uso dos materiais conforme termos — PENDENTE DE DEFINIÇÃO KARV.</span>
+        </label>
+
+        <p class="form-status" role="status" aria-live="polite"></p>
+        <button class="button button--submit" type="submit">ENVIAR INSCRIÇÃO <span aria-hidden="true">↘</span></button>
+      </form>
+    </section>
+
+    <section class="faq ink-section section-pad" id="faq">
+      <SectionHeader eyebrow="FAQ" title="PERGUNTAS FREQUENTES" tone="light" />
+      <div class="faq-list">
+        {faqs.map(([question, answer]) => (
+          <details>
+            <summary>{question}<span aria-hidden="true">＋</span></summary>
+            <p>{answer}</p>
+          </details>
+        ))}
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div>
+      <p class="wordmark">KARV</p>
+      <p>ARTE → REVESTIMENTO → KARV → ESTÚDIO</p>
+    </div>
+    <div>
+      <p>REGULAMENTO · PRIVACIDADE · CONTATO</p>
+      <p>PENDENTE DE DEFINIÇÃO KARV</p>
+    </div>
+    <p>© {new Date().getFullYear()} KARV</p>
+  </footer>
+
+  <script src="../scripts/form.ts"></script>
+</BaseLayout>
