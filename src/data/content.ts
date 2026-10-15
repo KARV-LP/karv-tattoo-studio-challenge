@@ -9,11 +9,46 @@ export const campaignSteps = [
 ] as const;
 
 export const styles = [
-  ["BLACKWORK", "Contraste, matéria e presença."],
-  ["NEO TRADITIONAL", "Cor, volume e narrativa."],
-  ["FINE LINE", "Precisão e delicadeza."],
-  ["REALISMO", "Profundidade e detalhe."],
-  ["AUTORAL", "Linguagem própria, sem rótulos."]
+  {
+    name: "BLACKWORK",
+    description: "Contraste, matéria e presença.",
+    image: "/assets/karv-challenge/estilos/a07-blackwork.png",
+    alt: "Poltrona KARV com revestimento Blackwork abstrato em preto e off-white",
+    width: 1454,
+    height: 1080
+  },
+  {
+    name: "NEO TRADITIONAL",
+    description: "Cor, volume e narrativa.",
+    image: "/assets/karv-challenge/estilos/a08-neo-traditional.png",
+    alt: "Poltrona KARV com revestimento Traditional e Neo Traditional",
+    width: 1454,
+    height: 1080
+  },
+  {
+    name: "ORIENTAL",
+    description: "Símbolo, movimento e tradição.",
+    image: "/assets/karv-challenge/estilos/a09-oriental.png",
+    alt: "Poltrona KARV com revestimento oriental de carpas e ondas em um estúdio",
+    width: 1124,
+    height: 1408
+  },
+  {
+    name: "FINE LINE / ORNAMENTAL",
+    description: "Precisão, ritmo e delicadeza.",
+    image: "/assets/karv-challenge/estilos/a10-ornamental.png",
+    alt: "Poltrona KARV com revestimento ornamental de mandalas em preto e off-white",
+    width: 1454,
+    height: 1080
+  },
+  {
+    name: "AUTORAL",
+    description: "Linguagem própria, sem rótulos.",
+    image: null,
+    alt: "",
+    width: 0,
+    height: 0
+  }
 ] as const;
 
 export const studioDuties = [

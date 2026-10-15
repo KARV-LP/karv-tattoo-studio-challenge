@@ -50,7 +50,16 @@ const formEndpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? "";
           <AssetPlaceholder label="A01 — HERO KARV DESKTOP / 16:9" ratio="hero" />
         </div>
         <div class="hero__media-mobile">
-          <AssetPlaceholder label="A02 — HERO KARV MOBILE / 9:16" ratio="hero" />
+          <img
+            class="asset-image asset-image--hero"
+            src="/assets/karv-challenge/hero/a02-hero-mobile.png"
+            alt="Tatuadora criando uma arte ao lado de uma Poltrona KARV com revestimento oriental"
+            width="1124"
+            height="1408"
+            loading="eager"
+            fetchpriority="high"
+            decoding="async"
+          />
         </div>
       </div>
     </section>
@@ -86,7 +95,15 @@ const formEndpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? "";
 
     <section class="editorial-split paper-section section-pad">
       <div class="editorial-split__media">
-        <AssetPlaceholder label="ARTE ALÉM DA PELE" ratio="portrait" />
+        <img
+          class="asset-image asset-image--editorial"
+          src="/assets/karv-challenge/transformacao/a05-arte-alem-da-pele.png"
+          alt="Tatuadora desenhando uma arte oriental em um estúdio com a Poltrona KARV ao lado"
+          width="1680"
+          height="945"
+          loading="lazy"
+          decoding="async"
+        />
       </div>
       <div class="editorial-split__copy">
         <SectionHeader
@@ -119,9 +136,21 @@ const formEndpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? "";
         body="A seleção procura consistência e autoria. O estilo é o ponto de partida, não um limite."
       />
       <div class="style-grid">
-        {styles.map(([name, description], index) => (
+        {styles.map(({ name, description, image, alt, width, height }, index) => (
           <article class="style-card">
-            <AssetPlaceholder label={name} ratio={index === 4 ? "wide" : "square"} />
+            {image ? (
+              <img
+                class="asset-image style-card__image"
+                src={image}
+                alt={alt}
+                width={width}
+                height={height}
+                loading="lazy"
+                decoding="async"
+              />
+            ) : (
+              <AssetPlaceholder label={name} ratio={index === styles.length - 1 ? "wide" : "square"} />
+            )}
             <h3>{name}</h3>
             <p>{description}</p>
           </article>
