@@ -19,3 +19,17 @@ jobs:
           node-version: 22
       - run: npm install
       - run: npm run build
+      - name: Smoke test compiled page
+        run: |
+          npm run preview -- --host 127.0.0.1 > /tmp/karv-preview.log 2>&1 &
+          for attempt in {1..20}; do
+            if curl --fail --silent http://127.0.0.1:4321/ > /tmp/karv-page.html; then
+              break
+            fi
+            sleep 1
+          done
+          test -s /tmp/karv-page.html
+          grep -q "SUA ARTE" /tmp/karv-page.html
+          grep -q "DA INSCRIÇÃO À PRODUÇÃO" /tmp/karv-page.html
+          grep -q "application-form" /tmp/karv-page.html
+          grep -q "PENDENTE DE DEFINIÇÃO KARV" /tmp/karv-page.html
