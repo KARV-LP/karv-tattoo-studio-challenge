@@ -7,6 +7,7 @@ interface Props {
 }
 
 const { title, description } = Astro.props;
+const ogImage = import.meta.env.PUBLIC_OG_IMAGE_URL;
 ---
 <!doctype html>
 <html lang="pt-BR">
@@ -21,7 +22,7 @@ const { title, description } = Astro.props;
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="/assets/ASSET-A12-OG-PENDENTE.jpg" />
+    {ogImage && <meta property="og:image" content={ogImage} />}
     <title>{title}</title>
   </head>
   <body>
