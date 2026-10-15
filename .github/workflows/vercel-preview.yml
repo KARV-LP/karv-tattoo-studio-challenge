@@ -91,6 +91,41 @@ jobs:
           fi
           grep -q "PENDENTE DE DEFINIÇÃO KARV" preview.html
 
+      - name: Create one-hour QA share link
+        env:
+          PREVIEW_URL: ${{ steps.deploy.outputs.url }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: |
+          deployment_host="${PREVIEW_URL#https://}"
+          printf '{"ttl":3600}\n' > qa-share-request.json
+          vercel api "/aliases/${deployment_host}/protection-bypass?teamId=${VERCEL_ORG_ID}" \
+            --method PATCH \
+            --input qa-share-request.json \
+            > qa-share-response.json
+          share_secret="$(node -e '
+            const fs = require("node:fs");
+            const value = JSON.parse(fs.readFileSync("qa-share-response.json", "utf8"));
+            if (typeof value !== "string" || value.length < 1) process.exit(1);
+            process.stdout.write(value);
+          ')"
+          PREVIEW_URL="$PREVIEW_URL" SHARE_SECRET="$share_secret" node -e '
+            const fs = require("node:fs");
+            const url = new URL(process.env.PREVIEW_URL);
+            url.searchParams.set("_vercel_share", process.env.SHARE_SECRET);
+            fs.writeFileSync("qa-preview-url.txt", `${url.toString()}\n`);
+          '
+          rm qa-share-response.json qa-share-request.json
+
+      - name: Save temporary QA access
+        uses: actions/upload-artifact@v4
+        with:
+          name: vercel-preview-qa-access
+          path: qa-preview-url.txt
+          if-no-files-found: error
+          retention-days: 1
+
       - name: Save deployment metadata
         uses: actions/upload-artifact@v4
         with:
