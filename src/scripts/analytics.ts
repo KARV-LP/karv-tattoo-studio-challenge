@@ -11,10 +11,14 @@ declare global {
   }
 }
 
+window.addEventListener("karv:analytics", (event) => {
+  const detail = (event as CustomEvent<AnalyticsEvent>).detail;
+  window.dataLayer?.push(detail);
+});
+
 const emit = (event: string, properties: Record<string, AnalyticsValue> = {}) => {
   const detail: AnalyticsEvent = { event, ...properties };
   window.dispatchEvent(new CustomEvent("karv:analytics", { detail }));
-  window.dataLayer?.push(detail);
 };
 
 emit("page_view", { page: "tattoo_studio_challenge" });
