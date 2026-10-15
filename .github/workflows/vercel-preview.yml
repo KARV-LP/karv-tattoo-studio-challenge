@@ -46,7 +46,7 @@ jobs:
         run: npm install
 
       - name: Install pinned Vercel CLI
-        run: npm install --global vercel@48.8.0
+        run: npm install --global vercel@64.2.0
 
       - name: Pull preview configuration
         env:
