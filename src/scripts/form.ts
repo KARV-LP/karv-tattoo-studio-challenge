@@ -1,3 +1,5 @@
+export {};
+
 const form = document.querySelector<HTMLFormElement>(".application-form");
 
 if (form) {
