@@ -1,0 +1,150 @@
+name: Vercel Preview
+
+on:
+  push:
+    branches:
+      - feat/figma-approved-implementation
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: vercel-preview-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    environment: preview
+    steps:
+      - name: Verify required Vercel credentials
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: |
+          missing=()
+          [ -n "$VERCEL_TOKEN" ] || missing+=("VERCEL_TOKEN")
+          [ -n "$VERCEL_ORG_ID" ] || missing+=("VERCEL_ORG_ID")
+          [ -n "$VERCEL_PROJECT_ID" ] || missing+=("VERCEL_PROJECT_ID")
+          if [ "${#missing[@]}" -gt 0 ]; then
+            printf '::error::Missing required GitHub Actions secret: %s\n' "${missing[@]}"
+            exit 1
+          fi
+          echo "Required Vercel credentials are available."
+
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22.22.0
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Audit production dependencies
+        run: npm audit
+
+      - name: Install pinned Vercel CLI
+        run: npm install --global vercel@64.2.0
+
+      - name: Pull preview configuration
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: vercel pull --yes --environment=preview
+
+      - name: Build preview
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: vercel build
+
+      - name: Deploy preview
+        id: deploy
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: |
+          deployment_url="$(vercel deploy --prebuilt)"
+          node -e 'const u=new URL(process.argv[1]); if(u.protocol!=="https:" || !u.hostname.endsWith(".vercel.app")) process.exit(1)' "$deployment_url"
+          printf 'url=%s\n' "$deployment_url" >> "$GITHUB_OUTPUT"
+          printf '%s\n' "$deployment_url" > deployment-url.txt
+
+      - name: Validate protected preview response
+        env:
+          PREVIEW_URL: ${{ steps.deploy.outputs.url }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: |
+          vercel curl / --deployment "$PREVIEW_URL" > preview.html
+          grep -q "SUA ARTE PODE" preview.html
+          if grep -q "OUTRA PELE" preview.html; then
+            echo "::error::Deprecated HERO copy found in preview."
+            exit 1
+          fi
+          grep -q "PENDENTE DE DEFINIÇÃO KARV" preview.html
+
+      - name: Create one-hour QA share link
+        env:
+          PREVIEW_URL: ${{ steps.deploy.outputs.url }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: |
+          deployment_host="${PREVIEW_URL#https://}"
+          printf '{"ttl":3600}\n' > qa-share-request.json
+          vercel api "/aliases/${deployment_host}/protection-bypass?teamId=${VERCEL_ORG_ID}" \
+            --method PATCH \
+            --input qa-share-request.json \
+            > qa-share-response.json
+          share_secret="$(node -e '
+            const fs = require("node:fs");
+            const value = JSON.parse(fs.readFileSync("qa-share-response.json", "utf8"));
+            const candidates = [
+              value,
+              value?.value,
+              value?.secret,
+              value?.protectionBypass,
+              value?.protectionBypass?.secret
+            ];
+            const directSecret = candidates.find((candidate) => typeof candidate === "string" && candidate.length > 0);
+            const bypassEntries = Object.entries(value?.protectionBypass ?? {})
+              .filter(([candidate, metadata]) => candidate.length > 0 && metadata && typeof metadata === "object")
+              .sort(([, left], [, right]) => Number(right.expiresAt ?? right.createdAt ?? 0) - Number(left.expiresAt ?? left.createdAt ?? 0));
+            const secret = directSecret ?? bypassEntries[0]?.[0];
+            if (!secret) {
+              console.error("Share-link response did not contain a usable bypass entry.");
+              process.exit(1);
+            }
+            process.stdout.write(secret);
+          ')"
+          PREVIEW_URL="$PREVIEW_URL" SHARE_SECRET="$share_secret" node -e '
+            const fs = require("node:fs");
+            const url = new URL(process.env.PREVIEW_URL);
+            url.searchParams.set("_vercel_share", process.env.SHARE_SECRET);
+            fs.writeFileSync("qa-preview-url.txt", `${url.toString()}\n`);
+          '
+          rm qa-share-response.json qa-share-request.json
+
+      - name: Save temporary QA access
+        uses: actions/upload-artifact@v4
+        with:
+          name: vercel-preview-qa-access
+          path: qa-preview-url.txt
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: Save deployment metadata
+        uses: actions/upload-artifact@v4
+        with:
+          name: vercel-preview-url
+          path: deployment-url.txt
+          if-no-files-found: error
+          retention-days: 14

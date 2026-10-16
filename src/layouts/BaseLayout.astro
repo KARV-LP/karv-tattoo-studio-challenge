@@ -1,0 +1,50 @@
+---
+import "../styles/global.css";
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+const ogImage = (import.meta.env.PUBLIC_OG_IMAGE_URL ?? "").trim();
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL ?? "").trim();
+
+const isAbsoluteHttpUrl = (value: string) => {
+  try {
+    const url = new URL(value);
+    return url.protocol === "https:" || url.protocol === "http:";
+  } catch {
+    return false;
+  }
+};
+
+const hasValidOgImage = isAbsoluteHttpUrl(ogImage);
+const hasValidSiteUrl = isAbsoluteHttpUrl(siteUrl);
+---
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700&display=swap" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#151513" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    {hasValidSiteUrl && <meta property="og:url" content={siteUrl} />}
+    {hasValidOgImage ? (
+      <meta property="og:image" content={ogImage} />
+    ) : (
+      <meta name="karv:og-image-status" content="OG IMAGE FINAL — PENDENTE DE ASSET KARV" />
+    )}
+    <title>{title}</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
+    <slot />
+  </body>
+</html>

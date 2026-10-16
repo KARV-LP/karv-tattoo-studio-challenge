@@ -1,0 +1,14 @@
+---
+interface Props {
+  label: string;
+  ratio?: "wide" | "portrait" | "square" | "hero";
+  note?: string;
+}
+
+const { label, ratio = "wide", note = "PENDENTE — não substituir por imagem genérica" } = Astro.props;
+---
+<div class:list={["asset-placeholder", `asset-placeholder--${ratio}`]} role="img" aria-label={`${label}. ${note}`}>
+  <span class="asset-placeholder__eyebrow">ASSET OFICIAL</span>
+  <strong>{label}</strong>
+  <small>{note}</small>
+</div>
